@@ -23,7 +23,8 @@ const SearchResult = mongoose.model('searchResult', new mongoose.Schema({
   startDate: Date,
   endDate: Date,
   location: String,
-  timestamp: Date,
+}, {
+  timestamps: true,
 }));
 
 // Options are to supress deprecation warnings
@@ -59,8 +60,6 @@ app.get('/fun-search', (request, response) => {
     startDate: request.query.startDate,
     endDate: request.query.endDate,
     location: request.query.location,
-  }, {
-    timestamps: true,
   });
 
   searchResult.save()
