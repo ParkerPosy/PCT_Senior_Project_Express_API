@@ -1,0 +1,14 @@
+{
+  "[json][css][scss]": {
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+  },
+  "emmet.includeLanguages": {
+    "javascript": "javascriptreact"
+  },
+  "files.trimTrailingWhitespace": true,
+}

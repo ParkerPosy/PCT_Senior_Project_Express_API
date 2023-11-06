@@ -1,0 +1,62 @@
+{
+  "results": [
+    {
+      "date": "2023-10-05",
+      "events": [
+        {
+          "startTime": "5pm",
+          "endTime": "6pm",
+          "title": "Karaoke",
+          "description": "description lorem ipsum 1",
+          "address": "123 Foobar St, Barfoo Town, 99999",
+          "googleMapsLink": "https://google.com/maps/place1"
+        },
+        {
+          "startTime": "5pm",
+          "endTime": "6pm",
+          "title": "Live Music",
+          "description": "description Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro aspernatur sed obcaecati fugit delectus optio voluptas quae omnis quibusdam, voluptatem ab nulla deleniti. Eos, totam nemo necessitatibus fugit nesciunt asperiores? Accusamus vero molestias nemo? Omnis corrupti consequatur autem consequuntur harum architecto velit culpa neque tempora ratione a nemo minima voluptas quae sapiente, iure molestias sed dolorem animi modi expedita voluptatum.",
+          "address": "124 Foobar St, Barfoo Town, 99999",
+          "googleMapsLink": "https://google.com/maps/place2"
+        },
+        {
+          "startTime": "5pm",
+          "endTime": "6pm",
+          "title": "1/2 Price Wings",
+          "description": "description lorem ipsum 3",
+          "address": "125 Foobar St, Barfoo Town, 99999",
+          "googleMapsLink": "https://google.com/maps/place3/really-long-link-text-that-should-be-truncated"
+        }
+      ]
+    },
+    {
+      "date": "2023-10-06",
+      "events": [
+        {
+          "startTime": "5pm",
+          "endTime": "6pm",
+          "title": "Karaoke",
+          "description": "description lorem ipsum 1",
+          "address": "123 Foobar St, Barfoo Town, 99999",
+          "googleMapsLink": "https://google.com/maps/place1"
+        },
+        {
+          "startTime": "5pm",
+          "endTime": "6pm",
+          "title": "Live Music",
+          "description": "description Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro aspernatur sed obcaecati fugit delectus optio voluptas quae omnis quibusdam, voluptatem ab nulla deleniti. Eos, totam nemo necessitatibus fugit nesciunt asperiores? Accusamus vero molestias nemo? Omnis corrupti consequatur autem consequuntur harum architecto velit culpa neque tempora ratione a nemo minima voluptas quae sapiente, iure molestias sed dolorem animi modi expedita voluptatum.",
+          "address": "124 Foobar St, Barfoo Town, 99999",
+          "googleMapsLink": "https://google.com/maps/place2"
+        },
+        {
+          "startTime": "5pm",
+          "endTime": "6pm",
+          "title": "1/2 Price Wings",
+          "description": "description lorem ipsum 3",
+          "address": "125 Foobar St, Barfoo Town, 99999",
+          "googleMapsLink": "https://google.com/maps/place3/really-long-link-text-that-should-be-truncated"
+        }
+      ]
+    }
+  ]
+}
