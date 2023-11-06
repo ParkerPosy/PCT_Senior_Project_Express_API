@@ -59,7 +59,7 @@ app.get('/fun-search', (request, response) => {
     startDate: request.query.startDate,
     endDate: request.query.endDate,
     location: request.query.location,
-    timestamp: Date.toISOString(),
+    timestamp: new Date().toISOString(),
   });
 
   searchResult.save()
