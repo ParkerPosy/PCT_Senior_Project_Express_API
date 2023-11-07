@@ -44,9 +44,9 @@ const httpServer = http.createServer(app);
 // const httpsServer = https.createServer({ key, cert }, app);
 
 // Allow the app to work while both are running on localhost
-app.use(cors({
-  origin: 'http://localhost:3000',
-}));
+// app.use(cors({
+//   origin: 'http://localhost:3000',
+// }));
 
 // Add a request handler
 app.use(bodyParser.json());
