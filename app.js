@@ -58,43 +58,43 @@ app.get('/fun-search', async (request, response) => {
   // Save query data to database                                 //
   /////////////////////////////////////////////////////////////////
 
-  // const searchResult = new SearchResult({
-  //   startDate: request.query.startDate,
-  //   endDate: request.query.endDate,
-  //   location: request.query.location,
-  // });
-  // const savedSearch = await searchResult.save();
-  // console.log(savedSearch.createdAt + ': Success Saving Query Data to MongoDB.');
+  const searchResult = new SearchResult({
+    startDate: request.query.startDate,
+    endDate: request.query.endDate,
+    location: request.query.location,
+  });
+  const savedSearch = await searchResult.save();
+  console.log(savedSearch.createdAt + ': Success Saving Query Data to MongoDB.');
 
 
   /////////////////////////////////////////////////////////////////
   // Delete any stored data that is more than 365 days old       //
   /////////////////////////////////////////////////////////////////
 
-  // const tooOldDate = new Date();
-  // const tooOldDay = tooOldDate.getDate() - 365;
-  // tooOldDate.setDate(tooOldDay);
-  // const deletedSearches = await SearchResult.deleteMany({ createdAt: { '$lt': tooOldDate } });
-  // console.log(`Deleted ${deletedSearches.deletedCount} old search results.`);
+  const tooOldDate = new Date();
+  const tooOldDay = tooOldDate.getDate() - 365;
+  tooOldDate.setDate(tooOldDay);
+  const deletedSearches = await SearchResult.deleteMany({ createdAt: { '$lt': tooOldDate } });
+  console.log(`Deleted ${deletedSearches.deletedCount} old search results.`);
 
 
   /////////////////////////////////////////////////////////////////
   // Find the locations array and print the length               //
   /////////////////////////////////////////////////////////////////
 
-  // const locationsObject = await Locations.findById(1);
-  // console.log('There are currently ' + locationsObject.locations.length + ' unique locations stored.');
+  const locationsObject = await Locations.findById(1);
+  console.log('There are currently ' + locationsObject.locations.length + ' unique locations stored.');
 
 
   /////////////////////////////////////////////////////////////////
   // Update the locations array with unique searched locations   //
   /////////////////////////////////////////////////////////////////
 
-  // const updatedLocations = await Locations.findByIdAndUpdate(1,
-  //   { $addToSet: { 'locations': request.query.location } },
-  //   { new: true, upsert: true, safe: true },
-  // );
-  // console.log(`Added ${updatedLocations.locations.length - locationsObject.locations.length} locations to locations set.`);
+  const updatedLocations = await Locations.findByIdAndUpdate(1,
+    { $addToSet: { 'locations': request.query.location } },
+    { new: true, upsert: true, safe: true },
+  );
+  console.log(`Added ${updatedLocations.locations.length - locationsObject.locations.length} locations to locations set.`);
 
 
   /////////////////////////////////////////////////////////////////
