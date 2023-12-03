@@ -104,15 +104,16 @@ app.get('/fun-search', async (request, response) => {
     let allResults = [];
     // get types based on query
     const types = [
-      ...(request.query.bar ?? 'true' === 'true' ? ['bar'] : []),
-      ...(request.query.cafe ?? 'true' === 'true' ? ['cafe'] : []),
-      ...(request.query.casino ?? 'true' === 'true' ? ['casino'] : []),
-      ...(request.query.museum ?? 'true' === 'true' ? ['museum'] : []),
-      ...(request.query.night_club ?? 'true' === 'true' ? ['night_club'] : []),
-      ...(request.query.park ?? 'true' === 'true' ? ['park'] : []),
-      ...(request.query.restaurant ?? 'true' === 'true' ? ['restaurant'] : []),
-      ...(request.query.tourist_attraction ?? 'true' === 'true' ? ['tourist_attraction'] : []),
+      ...(request.query.bar === 'true' ? ['bar'] : []),
+      ...(request.query.cafe === 'true' ? ['cafe'] : []),
+      ...(request.query.casino === 'true' ? ['casino'] : []),
+      ...(request.query.museum === 'true' ? ['museum'] : []),
+      ...(request.query.night_club === 'true' ? ['night_club'] : []),
+      ...(request.query.park === 'true' ? ['park'] : []),
+      ...(request.query.restaurant === 'true' ? ['restaurant'] : []),
+      ...(request.query.tourist_attraction === 'true' ? ['tourist_attraction'] : []),
     ];
+
     // Prelminary search based only on tag match
     for (const type of types) {
       // get first page of tag results. append.
