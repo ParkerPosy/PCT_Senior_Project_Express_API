@@ -102,17 +102,31 @@ app.get('/fun-search', async (request, response) => {
   /////////////////////////////////////////////////////////////////
   try {
     let allResults = [];
-    for (const type of ['bar', 'cafe', 'casino', 'museum', 'night_club', 'park', 'restaurant', 'tourist_attraction']) {
+    // get types based on query
+    const types = [
+      ...(request.query.bar ?? 'true' === 'true' ? ['bar'] : []),
+      ...(request.query.cafe ?? 'true' === 'true' ? ['cafe'] : []),
+      ...(request.query.casino ?? 'true' === 'true' ? ['casino'] : []),
+      ...(request.query.museum ?? 'true' === 'true' ? ['museum'] : []),
+      ...(request.query.night_club ?? 'true' === 'true' ? ['night_club'] : []),
+      ...(request.query.park ?? 'true' === 'true' ? ['park'] : []),
+      ...(request.query.restaurant ?? 'true' === 'true' ? ['restaurant'] : []),
+      ...(request.query.tourist_attraction ?? 'true' === 'true' ? ['tourist_attraction'] : []),
+    ];
+    // Prelminary search based only on tag match
+    for (const type of types) {
+      // get first page of tag results. append.
       const firstPageQuery = await axios.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json?' + new URLSearchParams({
         location: `${request.query.lat},${request.query.lng}`,
-        // 16100 meters = ~10 miles
-        radius: 16100,
+        // Radius * Meter Conversion
+        radius: request.query.radius * 1609.34,
         type: type,
         key: process.env.GOOGLE_API_KEY,
       }));
 
       allResults = [...allResults, ...firstPageQuery.data.results];
 
+      // get remaining pages of tag results. append.
       let pagetoken = firstPageQuery.data.next_page_token ?? false;
       while (pagetoken) {
         const pageQuery = await axios.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json?' + new URLSearchParams({
@@ -124,24 +138,39 @@ app.get('/fun-search', async (request, response) => {
       }
     }
 
+    // Filter results
     allResults = allResults.filter(result => {
-      return result.rating > 3 && result.user_ratings_total > 200 && !fast_food.filter((ff) => result.name.includes(ff)).length;
+      return result.rating > (request.query.minimum_rating ?? 3)
+        && result.user_ratings_total > (request.query.minimum_ratings ?? 200)
+        && !fast_food.filter((ff) => result.name.includes(ff)).length;
     });
 
+    // Get relevant fields
     const promiseArray = allResults.map(result => {
       return axios.get('https://maps.googleapis.com/maps/api/place/details/json?' + new URLSearchParams({
         place_id: result.place_id,
-        fields: 'name,place_id,vicinity,website,current_opening_hours,editorial_summary',
+        fields: 'name,place_id,vicinity,website,current_opening_hours,editorial_summary,rating,user_ratings_total,price_level',
         key: process.env.GOOGLE_API_KEY,
       }));
     });
     let allResultsWithDetails = await Promise.all(promiseArray);
     allResultsWithDetails = allResultsWithDetails.map(result => result.data.result);
 
-    const dayIndex = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const dayIndex = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday',
+    ];
+    // Turn days to [n, <day>]
     const dayIndexMap = Object.entries(dayIndex).reduce((acc, dayIndexArray) => ({ ...acc, [dayIndexArray[1]]: dayIndexArray[0] }), {});
     const startIndex = new Date(request.query.startDate).getDay();
     const endIndex = new Date(request.query.endDate).getDay() + 1;
+
+    // Make sure resulting array wraps properly
     let days;
     if (startIndex > endIndex) {
       days = [...dayIndex.slice(startIndex, 7), ...dayIndex.slice(0, endIndex)];
@@ -150,6 +179,7 @@ app.get('/fun-search', async (request, response) => {
     }
     days = days.map(day => dayIndexMap[day]);
 
+    // Turn start and end to full range
     const getDaysArray = (start, end) => {
       for(var arr = [], dt = new Date(start); dt <= new Date(end); dt.setDate(dt.getDate() + 1)){
         arr.push(new Date(dt));
@@ -157,6 +187,7 @@ app.get('/fun-search', async (request, response) => {
       return arr;
     };
 
+    // Create empty wrapper data shape for my response
     const startDate = new Date(request.query.startDate);
     startDate.setDate(startDate.getDate() + 1);
     const endDate = new Date(request.query.endDate);
@@ -166,13 +197,18 @@ app.get('/fun-search', async (request, response) => {
       date: day.toISOString().split('T')[0],
       events: [],
     }));
+
+    // For each day the user wants data on
     for (const [i, dayI] of days.entries()) {
+      // Filter out closed
       const openPlaces = allResultsWithDetails.filter(result => {
         if (!result.current_opening_hours?.weekday_text?.[dayI]) {
           return false;
         }
         return result.current_opening_hours?.weekday_text[dayI].split(': ')[1] !== 'Closed';
       });
+
+      // Map specific google data to the shape I want
       responseData[i].events = openPlaces.map(place => {
         const firstTime = place.current_opening_hours?.weekday_text[dayI].split(': ')[1].split(', ')[0];
         const secondTime = place.current_opening_hours?.weekday_text[dayI].split(': ')[1].split(', ')[1];
@@ -183,15 +219,19 @@ app.get('/fun-search', async (request, response) => {
           title: place.name,
           description: place.editorial_summary?.overview ?? 'No description provided.',
           address: place.vicinity,
+          rating: place.rating,
+          total_ratings: place.user_ratings_total,
+          price_level: place.price_level,
           googleMapsLink: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.name)}&query_place_id=${place.place_id}`,
           website: place.website,
         };
       });
     }
 
+    // Send my data
     response.send(responseData);
   } catch (e) {
-    response.status(400).send(e);
+    response.status(400).send([]);
     console.error(e);
   }
 });
